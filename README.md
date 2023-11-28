@@ -32,12 +32,12 @@ your-nodejs-app/
   ├──.env
   ├──app.js         
   ├──package.json   
-  ├── package.json
-  ├── README.md
-  ├── rest.http 
+  ├──package.json
+  ├──README.md
+  ├──rest.http 
   └── ...
 ```
-Run the code 
+Run the code to install node modules and dependencies
 ```bash
 npm install
 ```
@@ -64,7 +64,7 @@ Create a `Dockerfile` in the root of your project:
   ```
    touch Dockerfile
   ```
-
+Copy the following code into it:
 ```Dockerfile
 # Use Node.js as the base image
 FROM node:alpine
@@ -93,7 +93,15 @@ CMD ["npm", "start"]
 #### Step 4: Create Docker Compose and dockerignore Configuration
 
 Create a `docker-compose.yml` file in the root of your project:
-
+- for Windows
+  ```
+   type nul > docker-compose.yml
+  ```
+- for Linux
+  ```
+   touch docker-compose.yml
+  ```
+Copy the following code inside it:
 ```yaml
 version: '3.9'
 services:
@@ -122,9 +130,19 @@ services:
         # DB_PASS:
 volumes:
   mongo_db: {}
-
 ```
+- Do not forget to change the environment part inside the services as you changed in the ```.env``` file.
+  
 Create a `.dockerignore` file in the root of your project:
+- for Windows
+  ```
+   type nul > .dockerignore
+  ```
+- for Linux
+  ```
+   touch .dockerignore
+  ```
+Copy the following code into it:
 ```.dockerignore
 ./node_modules
 Dockerfile
@@ -135,22 +153,40 @@ docker-compose.yml
 
 #### Step 5: Build and Start Containers
 
-Build and start the Docker containers defined in the `docker-compose.yml`:
-
+Build and start the Docker containers defined in the `docker-compose.yml` :
+- Make sure your Mongo Services is in running status.
+- Open the docker Desktop application inorder to initiate the Docker Engine. And you have to pull mongo base image into your Docker desktop.
+Run the following command to build the image:
 ```bash
-docker-compose up -d
+docker build -t mongodb-con .
+```
+Here, ```mongodb-con``` is image name. change the name as you wish.
+
+Run the below command to initiate the container in detached mode:
+```bash
+docker compose up -d
+```
+Here, if you want to see the background running details in terminal then ignore ```-d``` and run the code.
+Once you have run this code you will have running container for this application. Inorder to see those containers, 
+run the below code in terminal:
+```bash
+docker ps
 ```
 
 #### Step 6: Access Your Application
 
-Access your Node.js application in a web browser at `http://localhost:3000`. MongoDB will be available at `mongodb://localhost:27017`.
+Access your Node.js application in a web browser at `http://localhost:4000/products`. MongoDB Atlas will be available at `mongodb://localhost:27017`.
+Now inorder to do the REST api function you have to enable one more extention in the VSCode.
+- Open the VScode and go to the extentions and search for ```REST client``` and install the extention.
+Open the ```rest.http``` file and click the ```Send Request``` above each function.
+You can find your results in the 'REST cilent' window and also in the `http://localhost:4000/products`.
 
 #### Step 7: Stopping and Cleaning Up
 
 To stop the application and remove the containers:
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ### Additional Notes
