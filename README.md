@@ -1,4 +1,5 @@
-# Step-by-Step Guide: Dockerizing REST API with MongoDB Atlas using Docker Compose
+# Step-by-Step Guide: Dockerize a Node.js application with MongoDB using Docker Compose
+This guide should help a new user to Dockerize a Node.js application with MongoDB using Docker Compose.
 
 #### Prerequisites
 
@@ -54,7 +55,7 @@ DB_PASS=DATABASE USER PASSWORD
 
 #### Step 3: Create Dockerfile
 
-Create a `Dockerfile` in the root of your project:
+Create a `Dockerfile` in the root of your project where the ```package.json``` file is located :
 - To create, run below code in your VScode terminal,
 - for Windows
   ```
@@ -90,7 +91,7 @@ EXPOSE 3000
 CMD ["npm", "start"]
 ```
 
-#### Step 4: Create Docker Compose and dockerignore Configuration
+#### Step 4: Create Docker Compose and Dockerignore Configuration
 
 Create a `docker-compose.yml` file in the root of your project:
 - for Windows
@@ -101,6 +102,8 @@ Create a `docker-compose.yml` file in the root of your project:
   ```
    touch docker-compose.yml
   ```
+- You can use the ```.ymal``` extention also instead of ```.yml```.
+  
 Copy the following code inside it:
 ```yaml
 version: '3.9'
@@ -131,7 +134,7 @@ services:
 volumes:
   mongo_db: {}
 ```
-- Do not forget to change the environment part inside the services as you changed in the ```.env``` file.
+- Do not forget to change the environment part inside the services here, as you changed in the ```.env``` file.
   
 Create a `.dockerignore` file in the root of your project:
 - for Windows
@@ -160,15 +163,20 @@ Run the following command to build the image:
 ```bash
 docker build -t mongodb-con .
 ```
-Here, ```mongodb-con``` is image name. change the name as you wish.
+Here, ```mongodb-con``` is image name and ```.``` shows the relative path to create it. Change the image name as you wish.
+- Here, you can use the above same command with having a Tag name for container to identify it easily.
+```
+docker build -t mongodb-con:mongocontainor
+ ```
+Here, ```mongocontainor``` is tag name.
 
 Run the below command to initiate the container in detached mode:
 ```bash
 docker compose up -d
 ```
-Here, if you want to see the background running details in terminal then ignore ```-d``` and run the code.
-Once you have run this code you will have running container for this application. Inorder to see those containers, 
-run the below code in terminal:
+- Here, if you want to see the background running details in terminal then ignore ```-d``` and run the above code.
+Once you have run this code you will have running container for this application. 
+- In order to see those containers, run the below code in terminal:
 ```bash
 docker ps
 ```
@@ -178,8 +186,8 @@ docker ps
 Access your Node.js application in a web browser at `http://localhost:4000/products`. MongoDB Atlas will be available at `mongodb://localhost:27017`.
 Now inorder to do the REST api function you have to enable one more extention in the VSCode.
 - Open the VScode and go to the extentions and search for ```REST client``` and install the extention.
-Open the ```rest.http``` file and click the ```Send Request``` above each function.
-You can find your results in the 'REST cilent' window and also in the `http://localhost:4000/products`.
+- Open the ```rest.http``` file and click the ```Send Request``` above each function.
+- You can find your results in the 'REST cilent' window and also in the `http://localhost:4000/products`.
 
 #### Step 7: Stopping and Cleaning Up
 
@@ -191,9 +199,52 @@ docker compose down
 
 ### Additional Notes
 
+To check your Docker version, open cmd in your machine and run the below command: 
+```bash
+docker --version
+```
+- If you have version before V20.10.8 then you have to use ```docker-compose``` to up or down the container.
+- If you have after V20.10.8 then you have to use ```docker compose``` to up or down the container.
+
+In order to get stopped but not deleted containers details, run the below code in terminal:
+```bash
+docker ps -a
+```
+- From the above code's output you can get the Name,containerId, Tagname,Port,etc. 
+
+To delete only a specific containor, after copy the tagname or ContainerId Run the below code :
+```bash
+docker rm <ContainorID>
+```
+- Here, replcae the ```<ContainorID>``` with your actual value.
+
+To stop only one running containor, run the below code:
+```bash
+docker stop <ContainorName>
+```
+To run a containor that was already stopped, run the below code:
+```bash
+docker start <ContainorName>
+```
+- Here, replace the ```<ContainorName>``` with your actual value.
+
+To view all the images:
+```bash
+docker images
+```
+To run a new image for create containor with port,containorName:
+```bash
+docker run -d -p 4000:3000 --name my-app mongoapp:v1
+```
+Here,
+- ```-d```       => To run in detached mode
+- ```-p```       => Define the port configuration
+- ```4000```     => App running port address in your local machine
+- ```3000```     => App running port address in Docker Containor
+- ```my-app```   => Name for the containor ( change as you wish)
+- ```mongoapp``` => Excisting image name
+- ```v1```       => Tag Name (Version of your app)
+
+
 - Customize ports, environment variables, or any other configurations in your `Dockerfile` or `docker-compose.yml` based on your application's requirements.
 - Ensure sensitive information like database credentials is managed securely, perhaps using environment variables.
-
-This guide should help a new user to Dockerize a Node.js application with MongoDB using Docker Compose. Feel free to modify and expand upon it for your GitHub README!
-
-
